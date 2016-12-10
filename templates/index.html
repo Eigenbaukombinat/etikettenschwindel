@@ -14,13 +14,31 @@
 </head>
 <body>
 
-{% for template in templates %}
+<nav class="navbar navbar-inverse navbar-default navbar-static-top">
+  <div class="container">
+    <a class="navbar-brand" href="/">etikettenschwindel</a>      
+  </div>
+</nav>
 
-<div>
-<a href="/template/{{ template['id'] }}">{{ template['title'] }}</a>
+<div class="container">
+<div class="row">
+<div class="col-md-12">
+<h3 class="text-center">Select template</h3>
 </div>
 
-{% endfor %}
+</div>
 
+<div class="row">
+<div class="col-md-12">
+<ul class="list-group">
+{% for template in templates %}
+
+<li class="list-group-item text-center"><a href="/template/{{ template['id'] }}">{{ template['title'] }}</a></li>
+
+{% endfor %}
+</ul>
+</div>
+</div>
+</div>
 </body>
 </html>
