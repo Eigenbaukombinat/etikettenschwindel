@@ -27,6 +27,5 @@ FLASK_APP=server.py bin/flask run
 
 ## TODO
 
-* Use proper paper size (lpr -o ...)
 * Use a config file for settings and available templates
 * Add bar/qr code support

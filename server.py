@@ -16,10 +16,12 @@ PRINTER = 'Brother-QL-710W'
 TEMPLATES = [
     dict(id='12_40',
          title='12mm x 40mm',
-         template='12mm_test.ott'),
+         template='12mm_test.ott',
+         pagesize='12x1'),
     dict(id='50_20',
         title='50mm x 20mm',
-        template='50mmx20mm.ott')
+        template='50mmx20mm.ott',
+        pagesize='50x1')
 ]
 
 
@@ -80,8 +82,10 @@ def preview_doc(template_filename, data):
     return preview_contents
 
 
-def print_doc(template_filename, data, printer_name):
+def print_doc(template_id, data, printer_name, pagesize):
     tempdir = tempfile.mkdtemp()
+    template_filename = _TEMPLATES_MAP[template_id]['template']
+    pagesize = _TEMPLATES_MAP[template_id]['pagesize']
     output_path = fill_template(template_filename, tempdir, data)
     subprocess.call([
         SOFFICE, '--invisible', '--norestore', '--headless',
@@ -93,7 +97,7 @@ def print_doc(template_filename, data, printer_name):
         raise ValueError('Output from soffice not found. Make sure soffice '
             'is not already running.')
     subprocess.call([
-        LPR, '-P', printer_name, ps_file])
+        LPR, '-P', printer_name, '-o', 'PageSize=%s' % pagesize, ps_file])
     shutil.rmtree(tempdir)
 
 
@@ -108,9 +112,8 @@ def index():
 
 @app.route('/template/<template_id>')
 def use_template(template_id):
-    template_filename = _TEMPLATES_MAP[template_id]['template']
     if 'print' in request.args:
-        print_doc(template_filename, to_dict(request.args), PRINTER)
+        print_doc(template_id, to_dict(request.args), PRINTER)
     return render_template('use_template.html', template_id=template_id,
         fields=get_fields(template_filename), data=request.args,
         query_string=request.query_string)
