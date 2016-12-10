@@ -12,10 +12,20 @@ Make sure libreoffice is not running while using the app.
 virtualenv .
 bin/pip install flask
 bin/pip install odfpy
-FLASK_APP=print_label.py bin/flask run
 ```
 
-## TODO:
+## CONFIGURATION
+
+For now, edit server.py.
+
+## RUN
+
+```
+FLASK_APP=server.py bin/flask run
+```
+
+
+## TODO
 
 * Use proper paper size (lpr -o ...)
 * Use a config file for settings and available templates

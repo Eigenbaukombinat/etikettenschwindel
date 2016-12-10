@@ -11,6 +11,11 @@ __pycache__/
 env/
 build/
 develop-eggs/
+bin/
+include/
+local/
+share/
+pip-selfcheck.json
 dist/
 downloads/
 eggs/
