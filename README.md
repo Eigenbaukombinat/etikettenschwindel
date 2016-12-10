@@ -16,7 +16,9 @@ bin/pip install odfpy
 
 ## CONFIGURATION
 
-For now, edit server.py.
+```cp config_example.json config.json```
+
+Edit config.json as needed.
 
 ## RUN
 
@@ -27,5 +29,5 @@ FLASK_APP=server.py bin/flask run
 
 ## TODO
 
-* Use a config file for settings and available templates
 * Add bar/qr code support
+* Styling of frontend

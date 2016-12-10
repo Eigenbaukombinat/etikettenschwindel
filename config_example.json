@@ -1,0 +1,19 @@
+{ 
+"printer": "Brother-QL-710W",
+"soffice": "/usr/bin/soffice",
+"lpr": "/usr/bin/lpr",
+"templates": [
+	{
+		"id": "12_40",
+		"title": "12mm x 40mm",
+		"template": "12mm_test.ott",
+		"pagesize": "12x1"
+	},
+	{
+		"id": "50_20",
+		"title": "50mm x 20mm",
+		"template": "50mmx20mm.ott",
+		"pagesize": "50x1"
+	}
+]
+}

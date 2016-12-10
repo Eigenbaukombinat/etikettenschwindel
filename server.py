@@ -2,6 +2,7 @@ import odf.userfield
 import os.path
 import tempfile
 import shutil
+import json
 import subprocess
 
 from flask import Flask, render_template, request
@@ -9,21 +10,12 @@ from flask import Flask, render_template, request
 app = Flask(__name__)
 
 
-#config
-SOFFICE = '/usr/bin/soffice'
-LPR = '/usr/bin/lpr'
-PRINTER = 'Brother-QL-710W'
-TEMPLATES = [
-    dict(id='12_40',
-         title='12mm x 40mm',
-         template='12mm_test.ott',
-         pagesize='12x1'),
-    dict(id='50_20',
-        title='50mm x 20mm',
-        template='50mmx20mm.ott',
-        pagesize='50x1')
-]
+with open('config.json') as configfile:
+    CONFIG = json.loads(configfile.read())
 
+_TEMPLATES_MAP = {}
+for template in CONFIG['templates']:
+    _TEMPLATES_MAP[template['id']] = template
 
 
 def clean_newlines(value):
@@ -55,8 +47,9 @@ def map_types(type_):
     raise ValueError("Unsupported Field Type: %s" % type_)
 
 
-def get_fields(template_filename):
+def get_fields(template_id):
     fields = []
+    template_filename = _TEMPLATES_MAP[template_id]['template']
     with open(template_filename, 'rb') as template_file:
         converter = odf.userfield.UserFields(template_file, None)
         for fieldname, type_, value in converter.list_fields_and_values():
@@ -69,7 +62,7 @@ def preview_doc(template_filename, data):
     tempdir = tempfile.mkdtemp()
     output_path = fill_template(template_filename, tempdir, data)
     subprocess.call([
-        SOFFICE, '--invisible', '--norestore', '--headless',
+        CONFIG['soffice'], '--invisible', '--norestore', '--headless',
         '--convert-to', 'jpg',
         '--outdir',  tempdir, output_path])
     imgfile = os.path.join(tempdir, 'output.jpg')    
@@ -82,13 +75,13 @@ def preview_doc(template_filename, data):
     return preview_contents
 
 
-def print_doc(template_id, data, printer_name, pagesize):
+def print_doc(template_id, data, printer_name):
     tempdir = tempfile.mkdtemp()
     template_filename = _TEMPLATES_MAP[template_id]['template']
     pagesize = _TEMPLATES_MAP[template_id]['pagesize']
     output_path = fill_template(template_filename, tempdir, data)
     subprocess.call([
-        SOFFICE, '--invisible', '--norestore', '--headless',
+        CONFIG['soffice'], '--invisible', '--norestore', '--headless',
         '--print-to-file', '-printer-name', printer_name,
         '--outdir',  tempdir, output_path])
 
@@ -97,25 +90,21 @@ def print_doc(template_id, data, printer_name, pagesize):
         raise ValueError('Output from soffice not found. Make sure soffice '
             'is not already running.')
     subprocess.call([
-        LPR, '-P', printer_name, '-o', 'PageSize=%s' % pagesize, ps_file])
+        CONFIG['lpr'], '-P', printer_name, '-o', 'PageSize=%s' % pagesize, ps_file])
     shutil.rmtree(tempdir)
 
-
-_TEMPLATES_MAP = {}
-for template in TEMPLATES:
-    _TEMPLATES_MAP[template['id']] = template
 
 
 @app.route('/')
 def index():
-    return render_template('index.html', templates=TEMPLATES)
+    return render_template('index.html', templates=CONFIG['templates'])
 
 @app.route('/template/<template_id>')
 def use_template(template_id):
     if 'print' in request.args:
-        print_doc(template_id, to_dict(request.args), PRINTER)
+        print_doc(template_id, to_dict(request.args), CONFIG['printer'])
     return render_template('use_template.html', template_id=template_id,
-        fields=get_fields(template_filename), data=request.args,
+        fields=get_fields(template_id), data=request.args,
         query_string=request.query_string)
 
 
