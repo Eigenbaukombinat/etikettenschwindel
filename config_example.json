@@ -14,6 +14,12 @@
 		"title": "50mm x 20mm",
 		"template": "50mmx20mm.ott",
 		"pagesize": "50x1"
+	},
+	{
+		"id": "50_name",
+		"title": "Namensschild (50mmx20mm)",
+		"template": "50mm_namensschild.ott",
+		"pagesize": "50x1"
 	}
 ]
 }
