@@ -16,19 +16,19 @@
 
 <nav class="navbar navbar-inverse navbar-default navbar-static-top">
   <div class="container">
-    <a class="navbar-brand" href="/">etikettenschwindel</a>      
+    <a class="navbar-brand" href="/etiketten">etikettenschwindel</a>      
     <p class="navbar-text navbar-right"><a href="/" class="navbar-link">template list</a></p>    
   </div>
 </nav>
 
 
-<form class="form-horizontal" action="/template/{{template_id}}" method="get">
+<form class="form-horizontal" action="/etiketten//template/{{template_id}}" method="get">
 <div class="row">
 <div class="col-md-3 text-right">
 <strong>preview image</strong>
 </div>
 <div class="col-md-9">
-<img src="/preview/{{ template_id }}/preview.jpg?{{ query_string }}" style="border: 1px solid black; margin-bottom:15px;"/>
+<img src="/etiketten/preview/{{ template_id }}/preview.jpg?{{ query_string }}" style="border: 1px solid black; margin-bottom:15px;"/>
 </div>
 </div>
 
